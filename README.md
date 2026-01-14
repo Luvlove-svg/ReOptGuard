@@ -67,6 +67,7 @@ On realistic city-scale scenarios (~5000 orders, 300 couriers, one-day episodes)
 
 ## Project Structure (planned for post-acceptance release)
 
+```
 reoptguard/
 ├── src/
 │   ├── bdrc/                          # BDRC RL agent & training
@@ -101,6 +102,7 @@ reoptguard/
 ├── requirements.txt                   # Dependencies
 ├── setup.py                           # Package installation
 └── README.md                          # This file
+```
 
 > Not included in this preview: `src/`, `configs/`, `data/`, `models/`, `results/`, or any scripts. These arrive with the v1.1.0 release after acceptance.
 
@@ -118,8 +120,8 @@ reoptguard/
 
 ```bash
 # Clone repository
-git clone https://github.com/[user]/reoptguard.git
-cd reoptguard
+git clone https://github.com/Luvlove-svg/ReOptGuard.git
+cd ReOptGuard
 
 # Install dependencies
 pip install -r requirements.txt
@@ -187,21 +189,23 @@ python scripts/eval_bdrc_vs_baselines.py \
 
 ### Problem Formulation: CMDP
 
-**State** $s_t$: System load (pending/in-progress orders), lateness metrics, dispatcher state
+**State** s_t: System load (pending/in-progress orders), lateness metrics, dispatcher state
 
-**Action** $a_t$: Three continuous parameters
-- $\text{reopt\_freq\_hz}$ ∈ [0, \tfrac{1}{60}] Hz (≥60 s interval; default target ≈90 s)
-- $\text{max\_reassign\_per\_round}$ ∈ [0, 200] orders
-- $\text{min\_cost\_saving\_threshold}$ ∈ [0, 1e5] cost units (typical tuned range 0–200)
+**Action** a_t: Three continuous parameters
+- reopt_freq_hz ∈ [0, 1/60] Hz (≥60 s interval; default target ≈90 s)
+- max_reassign_per_round ∈ [0, 200] orders
+- min_cost_saving_threshold ∈ [0, 1e5] cost units (typical tuned range 0–200)
 
-**Reward** $r_t$: Orders completed in current step (positive RL signal)
+**Reward** r_t: Orders completed in current step (positive RL signal)
 
 **Costs** (constraints):
-- $c1_t$: Service quality (lateness risk, completion rate gap vs. target ≥90%)
-- $c2_t$: Reoptimization budget (call frequency, reassignment volume vs. limits)
+- c1_t: Service quality (lateness risk, completion rate gap vs. target ≥90%)
+- c2_t: Reoptimization budget (call frequency, reassignment volume vs. limits)
 
 **CMDP Objective** (Lagrangian):
-$$\max_{\pi} \mathbb{E}[R] \text{ s.t. } \mathbb{E}[C1] \leq \epsilon_1, \mathbb{E}[C2] \leq \epsilon_2$$
+```
+max_π E[R]  subject to  E[C1] ≤ ε₁, E[C2] ≤ ε₂
+```
 
 → Solved via **Lagrangian PPO with adaptive multipliers** for real-time constraint tracking
 
